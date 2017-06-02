@@ -1,0 +1,37 @@
+div.login#google{
+    height: 36px;
+    width: 110px;
+
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,.25);
+    border-radius: 1px;
+
+    cursor: pointer;
+    background-color: #ffffff;
+}
+
+div.login#google:active{
+    background-color: #eeeeee;
+}
+
+div.login#google div{
+    display: inline-block;
+}
+
+div.login#google .logo{
+    width: 18px;
+    height: 18px;
+    padding: 8px;
+}
+
+div.login#google .logo svg{
+    height: 100%;
+    width: 100%;
+}
+
+div.login#google .title{
+    font-size: 13px;
+    color: #757575;
+
+    vertical-align: top;
+    padding: 10px;
+}
