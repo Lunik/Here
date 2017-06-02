@@ -2,6 +2,7 @@
 
 # ide
 /.idea
+/garbage
 
 # dependencies
 /node_modules
