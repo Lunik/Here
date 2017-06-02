@@ -25,7 +25,7 @@ export default class FirebaseLogin extends React.Component{
     setUser(user){
         this.props.setUser(user)
     }
-    auth(){
+    authGoogle(){
         if (!firebaseApp.auth().currentUser) {
             var provider = new firebase.auth.GoogleAuthProvider()
             provider.addScope('https://www.googleapis.com/auth/firebase.database')
@@ -42,7 +42,7 @@ export default class FirebaseLogin extends React.Component{
         return (
             <GoogleButton
                 type="login"
-                onClick={() => this.auth()} />
+                onClick={() => this.authGoogle()} />
         )
     }
 }
