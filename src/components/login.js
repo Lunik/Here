@@ -7,6 +7,7 @@ import React from 'react'
 import Profile from './profile'
 import FirebaseLogin from './firebaseLogin'
 import firebaseApp from './firebaseApp'
+import 'firebase/database'
 
 export default class Login extends React.Component{
     constructor(props){
@@ -18,6 +19,33 @@ export default class Login extends React.Component{
     setUser(user){
         this.setState({
             profile: user,
+        })
+        this.saveUser(user)
+    }
+    getUser(uid, cb){
+        var database = firebaseApp.database()
+        database.ref(`/users/${uid}`).once('value').then(cb)
+    }
+    saveUser(user){
+        var database = firebaseApp.database()
+        this.getUser(user.uid, (data) => {
+            if(!data.val()){
+                database.ref(`/users/${user.uid}`).set({
+                    name: user.displayName,
+                    email: user.email,
+                    avatar: user.photoURL,
+                    phone: user.phoneNumber,
+                    uid: user.uid
+                })
+            } else {
+                database.ref(`/users/${user.uid}`).update({
+                    name: user.displayName,
+                    email: user.email,
+                    avatar: user.photoURL,
+                    phone: user.phoneNumber,
+                    uid: user.uid
+                })
+            }
         })
     }
     render(){
