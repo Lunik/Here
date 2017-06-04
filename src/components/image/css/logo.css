@@ -1,0 +1,13 @@
+div.logo#main{
+    margin: 50px auto;
+}
+
+div.logo#main img{
+    filter: drop-shadow(0px 4px 8px rgba(0, 0, 0,0.25));
+    width: 20%;
+    min-width: 200px;
+}
+div.logo#main .title{
+    color: #757575;
+    font-size: 40px;
+}
