@@ -1,0 +1,42 @@
+div.button{
+    height: 36px;
+    width: 110px;
+
+    margin: auto;
+
+    border: none;
+    box-shadow: 0px 2px 4px 0 rgba(0,0,0,.25);
+    border-radius: 1px;
+
+    cursor: pointer;
+    background-color: #ffffff;
+}
+div.button:hover{
+    background-color: #eeeeee;
+}
+div.button:active{
+    background-color: #dddddd;
+}
+
+div.button div{
+    display: inline-block;
+}
+
+div.button .logo{
+    width: 18px;
+    height: 18px;
+    padding: 8px;
+}
+
+div.button .logo svg{
+    height: 100%;
+    width: 100%;
+}
+
+div.button .title{
+    font-size: 13px;
+    color: #757575;
+
+    vertical-align: top;
+    padding: 10px;
+}
