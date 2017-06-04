@@ -1,34 +1,39 @@
-div.login#google{
+div.login-button{
     height: 36px;
     width: 110px;
 
-    box-shadow: 0 2px 4px 0 rgba(0,0,0,.25);
+    margin: auto;
+
+    box-shadow: 0px 2px 4px 0 rgba(0,0,0,.25);
     border-radius: 1px;
 
     cursor: pointer;
     background-color: #ffffff;
 }
 
-div.login#google:active{
+div.login-button:hover{
     background-color: #eeeeee;
 }
+div.login-button:active{
+    background-color: #dddddd;
+}
 
-div.login#google div{
+div.login-button div{
     display: inline-block;
 }
 
-div.login#google .logo{
+div.login-button .logo{
     width: 18px;
     height: 18px;
     padding: 8px;
 }
 
-div.login#google .logo svg{
+div.login-button .logo svg{
     height: 100%;
     width: 100%;
 }
 
-div.login#google .title{
+div.login-button .title{
     font-size: 13px;
     color: #757575;
 
