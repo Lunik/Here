@@ -1,0 +1,87 @@
+li.friend{
+    height: 100px;
+    width: 40%;
+    min-width: 300px;
+    margin: auto;
+
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,.25);
+    border-radius: 1px;
+
+    position: relative;
+}
+
+li.friend#info{
+    cursor: pointer;
+}
+
+li.friend:hover{
+    background-color: #eeeeee;
+}
+
+li.friend:active{
+    background-color: #dddddd;
+}
+
+li.friend#action{
+    background-color: #999999;
+}
+
+li.friend .avatar{
+    width: 60px;
+
+    float: left;
+    margin: 20px 0 20px 20px;
+    border-radius: 100%;
+}
+
+li.friend .name{
+    display: inline-block;
+    margin: 40px auto;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+li.friend svg.switch{
+    float: right;
+    margin: 8px 8px auto auto;
+
+    cursor: pointer;
+}
+
+li.friend svg.switch{
+    fill: #cccccc;
+}
+li.friend svg.switch:hover{
+    fill: #bbbbbb;
+}
+
+li.friend .action{
+    width: 25%;
+    height: 40%;
+
+    position: absolute;
+    top: 30%;
+    left: 0;
+    right: 0;
+
+    margin: auto;
+    background-color: #888888;
+    border-radius: 2px;
+    box-shadow: inset 0 0px 2px 0 rgba(0,0,0,.25);
+
+    cursor: pointer;
+}
+
+li.friend .action:hover{
+    background-color: #777777;
+}
+li.friend .action p{
+    margin: 11px auto;
+
+    color: #dddddd;
+}
+
+li.friend .loading{
+    position: relative;
+    top: 30px;
+}

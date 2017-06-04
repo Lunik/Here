@@ -1,0 +1,7 @@
+div.friends{
+  margin: 50px auto;
+}
+div.friends ul{
+    list-style-type: none;
+    padding: 0;
+}
