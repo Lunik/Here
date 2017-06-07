@@ -60,19 +60,8 @@ export default class FriendList extends React.Component{
        var database = firebaseApp.database()
        var myUid = firebaseApp.auth().currentUser.uid
 
-       database.ref(`/users/${uid}/connections`).once('value').then((snapshot) => {
-           var count = 0
-           var isFriend = false
-           snapshot.forEach((childSnapshot) => {
-               if(myUid === childSnapshot.key && childSnapshot.val()){
-                   isFriend = true
-                   cb(isFriend)
-               }
-               count++
-               if(count === snapshot.numChildren() && !isFriend){
-                   cb(isFriend)
-               }
-           })
+       database.ref(`/users/${uid}/connections/${myUid}`).once('value').then((snapshot) => {
+           cb(snapshot.val() != null)
        })
    }
    getFriends(cb){
