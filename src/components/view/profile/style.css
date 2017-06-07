@@ -1,0 +1,17 @@
+div.profile{
+    text-align: center;
+    min-width: 350px;
+
+    margin-bottom: 50px;
+}
+div.profile > img{
+    width: 20%;
+    min-width: 200px;
+    border-radius: 100%;
+
+    margin-top: 50px;
+}
+
+div.profile .id{
+    font-size: 10px;
+}

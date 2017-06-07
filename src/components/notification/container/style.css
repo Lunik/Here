@@ -1,0 +1,27 @@
+div.notificationContainer{
+    display: block;
+    position: fixed;
+
+    max-width: 100%;
+    z-index: 9998;
+}
+
+div.notificationContainer.topLeft{
+    top: 5px;
+    left: 15px;
+}
+
+div.notificationContainer.topRight{
+    top: 5px;
+    right: 15px;
+}
+
+div.notificationContainer.bottomLeft{
+    bottom: 5px;
+    left: 15px;
+}
+
+div.notificationContainer.bottomRight{
+    bottom: 5px;
+    right: 15px;
+}

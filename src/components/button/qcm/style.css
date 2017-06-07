@@ -1,0 +1,16 @@
+div.qcm .answer{
+    display: inline-block;
+    height: 20px;
+    width: 70px;
+    padding: 5px;
+
+    vertical-align: top;
+}
+
+div.qcm .answer#true svg{
+    fill: #27AE60;
+}
+
+div.qcm .answer#false svg{
+    fill: #f75353;
+}

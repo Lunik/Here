@@ -1,0 +1,12 @@
+.popup.addFriend .help .text{
+    left: -85px;
+}
+.popup.addFriend .friend-id{
+    margin: 0 5px 10px 25px;
+
+    width: 200px;
+}
+
+.popup.addFriend .submit-button{
+    margin: 10px auto 0 auto;
+}

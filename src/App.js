@@ -1,10 +1,11 @@
 import React from 'react'
 import './App.css'
 
-import firebaseApp from './components/firebase/firebaseApp'
-import Login from './components/login'
-import Profile from './components/profile'
-import Friend from './components/friend'
+import firebaseApp from './components/firebase/app'
+import Login from './components/view/login'
+import Profile from './components/view/profile'
+import Friend from './components/view/friend'
+import NotificationContainer from './components/notification/container'
 
 class App extends React.Component {
     constructor(props) {
@@ -28,21 +29,29 @@ class App extends React.Component {
         })
     }
     render() {
+        var view
         if(this.state.user) {
             if(this.state.hash){
-                return (
+                view = (
                    <Friend uid={this.state.hash} />
                 )
             } else {
-                return (
+                view = (
                     <Profile user={this.state.user}/>
                 )
             }
         } else {
-            return (
+            view = (
                 <Login setUser={(user) => this.setUser(user)}/>
             )
         }
+
+        return (
+            <div className="App">
+                {view}
+                <NotificationContainer />
+            </div>
+        )
     }
 }
 
