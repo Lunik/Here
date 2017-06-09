@@ -44,6 +44,10 @@ li.friend[type="friend"] .name{
     margin: 40px auto;
 }
 
+li.friend[type="friend"] .pending{
+    display: none;
+}
+
 li.friend[type="invitation"] .name, li.friend[type="pending"] .name{
     margin: 20px auto;
 }

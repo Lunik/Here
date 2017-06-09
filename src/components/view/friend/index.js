@@ -6,6 +6,7 @@ import React from 'react'
 import firebaseApp from '../../firebase/app/index'
 import 'firebase/database'
 import Spinner from 'react-spinkit'
+import { notify } from '../../notification'
 
 import './style.css'
 
@@ -21,6 +22,26 @@ export default class Friend extends React.Component{
             this.setState({
                 user: user
             })
+        })
+    }
+    componentDidMount(){
+        this.isHeFriendWithMe(this.state.uid, (isFriend) => {
+            if(!isFriend){
+                notify({
+                    type: 'error',
+                    title: 'User failed',
+                    content: 'This user is not connected to you.'
+                })
+                this.returnProfile()
+            }
+        })
+    }
+    isHeFriendWithMe(uid, cb){
+        var database = firebaseApp.database()
+        var myUid = firebaseApp.auth().currentUser.uid
+
+        database.ref(`/users/${uid}/connections/${myUid}`).once('value').then((snapshot) => {
+            cb(snapshot.val() != null)
         })
     }
     get(uid, cb){

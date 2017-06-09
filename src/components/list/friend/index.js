@@ -16,32 +16,47 @@ export default class FriendList extends React.Component{
    constructor(props){
        super(props)
        this.props = props
+       this.localStorageKey = "here:friends"
        this.state = {
            friends: {},
            addFriendPopup: false
        }
-
-       this.getFriends((friend) => {
-           if(!this.state.friends[friend.uid]) {
-               var friends = Object.assign({}, this.state.friends)
-               friends[friend.uid] = friend.status
-               this.setState({
-                   friends: friends
-               })
-           }
-       })
    }
+    componentDidMount() {
+        this.updateFriends()
+        this.updateTriggers()
+    }
+    updateTriggers(){
+        var database = firebaseApp.database()
+        var myUid = firebaseApp.auth().currentUser.uid
+
+        // Trigger new invitations
+        database.ref(`/users/${myUid}/invitations`).on('value', () => this.updateFriends())
+    }
+    updateFriends(){
+        this.getFriends((friend) => {
+            if(!this.state.friends[friend.uid]) {
+                var friends = Object.assign({}, this.state.friends)
+                friends[friend.uid] = friend.status
+                this.setState({
+                    friends: friends
+                })
+                localStorage.setItem(this.localStorageKey, JSON.stringify(friends))
+            }
+        })
+    }
     showAddFriend(){
         var notification = document.createElement('div')
 
         document.getElementById('friends-list').appendChild(notification)
         ReactDOM.render(
-            <AddFriendPopup onRemove={() => {
+            <AddFriendPopup onRemove={(friendUid) => {
                 try {
                     document.getElementById('friends-list').removeChild(notification)
                 } catch (e){
                     return
                 }
+                this.updateFriends()
             }}/>,
             notification)
    }
@@ -106,7 +121,7 @@ export default class FriendList extends React.Component{
 
            listItems.push((
                <FriendItem uid={friendId} status={status}
-                           removeFriend={(uid) => this.removeFriend(uid)}/>
+                           removeFriend={() => this.removeFriend(friendId)}/>
            ))
        }
        return listItems

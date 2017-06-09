@@ -17,13 +17,38 @@ export default class Friend extends React.Component{
         this.props = props
         this.state = {
             friend: null,
-            mode: 'info'
+            mode: 'info',
+            status: this.props.status
         }
         this.get(this.props.uid, (user) => {
             this.setState({
                 friend: user
             })
         })
+    }
+    componentDidMount(){
+        this.setState({
+            mounted: true
+        })
+        this.triggerUpdate()
+    }
+    triggerUpdate(){
+        var database = firebaseApp.database()
+        var myUid = firebaseApp.auth().currentUser.uid
+
+        // Trigger accept invitations
+        if(this.state.status === 'pending' || this.state.status === 'friend'){
+            database.ref(`/users/${this.props.uid}/invitations/${myUid}`).on('value', (snaphot) => {
+                var invitationStatus = snaphot.val()
+                database.ref(`/users/${this.props.uid}/connections/${myUid}`).once('value').then((snapshot) => {
+                    if(snapshot.val()){
+                        this.changeStatus('friend')
+                    } else if(!invitationStatus && !snapshot.val()){
+                        this.props.removeFriend()
+                    }
+                })
+            })
+        }
     }
     switchMode(mode){
         this.setState({
@@ -38,8 +63,8 @@ export default class Friend extends React.Component{
             cb(user)
         })
     }
-    remove(uid){
-        this.props.removeFriend(uid)
+    remove(){
+        this.props.removeFriend()
         this.switchMode('info')
     }
     showFriend(uid){
@@ -53,8 +78,18 @@ export default class Friend extends React.Component{
             database.ref(`/users/${myUid}/invitations/${this.state.friend.uid}`).set(null)
         })
 
-        if (!response){
+        if (response){
+            this.changeStatus('friend')
+        } else {
             this.props.removeFriend(this.state.friend.uid)
+        }
+    }
+    changeStatus(status){
+        const values = ['pending', 'friend', 'invitation']
+        if(values.indexOf(status) !== -1){
+            this.setState({
+                status: status
+            })
         }
     }
     render(){
@@ -76,7 +111,7 @@ export default class Friend extends React.Component{
                     </li>
                 )
             } else {
-                switch (this.props.status){
+                switch (this.state.status){
                     case 'pending':
                         // Pending friend
                         return (
@@ -106,7 +141,7 @@ export default class Friend extends React.Component{
                     default:
                         // default friend
                         return (
-                            <li className="friend" id="info" type={this.props.status} onClick={() => this.showFriend(this.state.friend.uid)}>
+                            <li className="friend" id="info" type={this.state.status} onClick={() => this.showFriend(this.state.friend.uid)}>
                                 <InfoIcon className="switch" id="action" onClick={(e) => {
                                     e.stopPropagation()
                                     this.switchMode('action')

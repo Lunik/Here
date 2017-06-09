@@ -22,11 +22,11 @@ export default class AddFriendPopup extends React.Component{
             onRemove: this.props.onRemove || function(){}
         }
     }
-    remove(){
+    onRemove(uid){
         this.setState({
             mounted: false
         })
-        this.state.onRemove()
+        this.state.onRemove(uid)
     }
     updateUid(uid){
         this.setState({
@@ -72,7 +72,7 @@ export default class AddFriendPopup extends React.Component{
                                     content: 'Your invitation have been send.'
                                 })
                                 console.log('Invitation send')
-                                this.remove()
+                                this.onRemove(this.state.uid)
                             })
                         } else {
                             notify({
@@ -102,7 +102,7 @@ export default class AddFriendPopup extends React.Component{
     }
     render(){
         return(
-            <Popup onRemove={() => this.remove()} className="addFriend">
+            <Popup onRemove={() => this.onRemove(null)} className="addFriend">
                 <h2 className="title">Adding a friend</h2>
                 <Input className="friend-id"
                        type="text"
