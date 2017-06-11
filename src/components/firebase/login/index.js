@@ -9,81 +9,80 @@ import LoginButton from '../../button/session'
 import '../../view/login/style.css'
 import { generateID } from '../../../lib/user'
 
-export default class FirebaseLogin extends React.Component{
-    constructor(props){
-        super(props)
-        this.props = props
-        this.state = {
-            enable: false
-        }
+export default class FirebaseLogin extends React.Component {
+  constructor (props) {
+    super(props)
+    this.props = props
+    this.state = {
+      enable: false
+    }
 
-        this.initAuth()
+    this.initAuth()
+  }
+  componentWillUnmount () {
+    var database = firebaseApp.database()
+    var myUid = firebaseApp.auth().currentUser.uid
+    database.ref(`/users/${myUid}`).off()
+  }
+  initAuth () {
+    firebaseApp.auth().onAuthStateChanged((user) => this.setUser(user))
+  }
+  setUser (user) {
+    this.props.setUser(user)
+    if (user) {
+      this.saveUser(user)
     }
-    componentWillUnmount(){
-        var database = firebaseApp.database()
-        var myUid = firebaseApp.auth().currentUser.uid
-        database.ref(`/users/${myUid}`).off()
-    }
-    initAuth(){
-        firebaseApp.auth().onAuthStateChanged((user) => this.setUser(user))
-    }
-    setUser(user){
-        this.props.setUser(user)
-        if(user){
-            this.saveUser(user)
-        }
-    }
-    getUser(uid, cb){
-        var database = firebaseApp.database()
-        database.ref(`/users/${uid}`).once('value').then(cb)
-    }
-    saveUser(user){
-        var database = firebaseApp.database()
-        this.getUser(user.uid, (snapshot) => {
-            if(!snapshot.val()){
-                database.ref(`/users/${user.uid}`).set({
-                    metadata: {
-                        name: user.displayName,
-                        avatar: user.photoURL,
-                        id: generateID(user)
-                    },
-                    email: user.email,
-                    phone: user.phoneNumber,
-                    uid: user.uid
-                })
-            } else {
-                database.ref(`/users/${user.uid}`).update({
-                    metadata: {
-                        name: user.displayName,
-                        avatar: user.photoURL,
-                        id: generateID(user)
-                    },
-                    email: user.email,
-                    phone: user.phoneNumber,
-                    uid: user.uid
-                })
-            }
+  }
+  getUser (uid, cb) {
+    var database = firebaseApp.database()
+    database.ref(`/users/${uid}`).once('value').then(cb)
+  }
+  saveUser (user) {
+    var database = firebaseApp.database()
+    this.getUser(user.uid, (snapshot) => {
+      if (!snapshot.val()) {
+        database.ref(`/users/${user.uid}`).set({
+          metadata: {
+            name: user.displayName,
+            avatar: user.photoURL,
+            id: generateID(user)
+          },
+          email: user.email,
+          phone: user.phoneNumber,
+          uid: user.uid
         })
+      } else {
+        database.ref(`/users/${user.uid}`).update({
+          metadata: {
+            name: user.displayName,
+            avatar: user.photoURL,
+            id: generateID(user)
+          },
+          email: user.email,
+          phone: user.phoneNumber,
+          uid: user.uid
+        })
+      }
+    })
+  }
+  authGoogle () {
+    if (!firebaseApp.auth().currentUser) {
+      var provider = new firebase.auth.GoogleAuthProvider()
+      provider.addScope('https://www.googleapis.com/auth/firebase.database')
+      provider.addScope('https://www.googleapis.com/auth/userinfo.email')
+      firebaseApp.auth().signInWithPopup(provider).then((result) => {
+        this.setUser(result.user)
+      }).catch(function (error) {
+        console.error(error)
+      })
     }
-    authGoogle(){
-        if (!firebaseApp.auth().currentUser) {
-            var provider = new firebase.auth.GoogleAuthProvider()
-            provider.addScope('https://www.googleapis.com/auth/firebase.database')
-            provider.addScope('https://www.googleapis.com/auth/userinfo.email')
-            firebaseApp.auth().signInWithPopup(provider).then((result) => {
-
-                this.setUser(result.user)
-            }).catch(function(error) {
-                console.error(error)
-            })
-        }
-    }
-    render(){
-        return (
-            <LoginButton
-                type="login"
-                provider="google"
-                onClick={() => this.authGoogle()} />
-        )
-    }
+  }
+  render () {
+    return (
+      <LoginButton
+        type='login'
+        provider='google'
+        onClick={() => this.authGoogle()} />
+    )
+  }
 }

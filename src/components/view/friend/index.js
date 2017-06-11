@@ -11,83 +11,83 @@ import PokeButton from '../../button/poke'
 
 import './style.css'
 
-export default class Friend extends React.Component{
-    constructor(props){
-        super(props)
-        this.props = props
-        this.state = {
-            uid: this.props.uid,
-            user: null
-        }
-        this.get(this.state.uid, (user) => {
-            this.setState({
-                user: user
-            })
-        })
+export default class Friend extends React.Component {
+  constructor (props) {
+    super(props)
+    this.props = props
+    this.state = {
+      uid: this.props.uid,
+      user: null
     }
-    componentWillUnmount(){
+    this.get(this.state.uid, (user) => {
+      this.setState({
+        user: user
+      })
+    })
+  }
+  componentWillUnmount () {
 
-    }
-    componentDidMount(){
-        this.isHeFriendWithMe(this.state.uid, (isFriend) => {
-            if(!isFriend){
-                notify({
-                    type: 'error',
-                    title: 'User failed',
-                    content: 'This user is not connected to you.'
-                })
-                this.returnProfile()
-            }
+  }
+  componentDidMount () {
+    this.isHeFriendWithMe(this.state.uid, (isFriend) => {
+      if (!isFriend) {
+        notify({
+          type: 'error',
+          title: 'User failed',
+          content: 'This user is not connected to you.'
         })
-    }
-    isHeFriendWithMe(uid, cb){
-        var database = firebaseApp.database()
-        var myUid = firebaseApp.auth().currentUser.uid
+        this.returnProfile()
+      }
+    })
+  }
+  isHeFriendWithMe (uid, cb) {
+    var database = firebaseApp.database()
+    var myUid = firebaseApp.auth().currentUser.uid
 
-        database.ref(`/users/${uid}/connections/${myUid}`).once('value').then((snapshot) => {
-            cb(snapshot.val() != null)
-        })
-    }
-    get(uid, cb){
-        var database = firebaseApp.database()
-        database.ref(`/users/${uid}/metadata`).once('value').then((snapshot) => {
-            var user = snapshot.val()
-            if(user){
-                user.uid = uid
-                cb(user)
-            } else {
-                this.returnProfile()
-            }
-        })
-    }
-    returnProfile(){
-        window.location.hash = ''
-    }
-    remove(uid){
-        var database = firebaseApp.database()
-        var myUid = firebaseApp.auth().currentUser.uid
+    database.ref(`/users/${uid}/connections/${myUid}`).once('value').then((snapshot) => {
+      cb(snapshot.val() != null)
+    })
+  }
+  get (uid, cb) {
+    var database = firebaseApp.database()
+    database.ref(`/users/${uid}/metadata`).once('value').then((snapshot) => {
+      var user = snapshot.val()
+      if (user) {
+        user.uid = uid
+        cb(user)
+      } else {
+        this.returnProfile()
+      }
+    })
+  }
+  returnProfile () {
+    window.location.hash = ''
+  }
+  remove (uid) {
+    var database = firebaseApp.database()
+    var myUid = firebaseApp.auth().currentUser.uid
 
-        database.ref(`/users/${myUid}/connections/${uid}`).set(null)
-    }
-    render(){
-        if(this.state.user){
-            return (
-                <div className="friend-profile">
-                    <p>Click to send notification to {this.state.user.name}</p>
-                    <PokeButton timeout={30000} user={this.state.user} />
-                </div>
-            )
-        } else {
-            return (
-                <div className="friend-profile">
-                    <div className="loading">
-                        <Spinner
-                            fadeIn="none"
-                            name="line-scale" />
-                    </div>
-                </div>
+    database.ref(`/users/${myUid}/connections/${uid}`).set(null)
+  }
+  render () {
+    if (this.state.user) {
+      return (
+        <div className='friend-profile'>
+          <p>Click to send notification to {this.state.user.name}</p>
+          <PokeButton timeout={30000} user={this.state.user} />
+        </div>
+      )
+    } else {
+      return (
+        <div className='friend-profile'>
+          <div className='loading'>
+            <Spinner
+              fadeIn='none'
+              name='line-scale' />
+          </div>
+        </div>
 
-            )
-        }
+      )
     }
+  }
 }
