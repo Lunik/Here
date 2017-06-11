@@ -126,7 +126,7 @@ export default class Friend extends React.Component{
         })
     }
     pokeAnimation(poke){
-        const friendDiv = document.querySelector(`li.friend#${poke.from} .avatar`)
+        const friendDiv = document.querySelector(`li.friend#_${poke.from} .avatar`)
         var notification = document.createElement('div')
         document.querySelector('.poke-container').appendChild(notification)
         ReactDOM.render(<Poke colors={this.state.friend.colors}
@@ -155,11 +155,12 @@ export default class Friend extends React.Component{
         }
     }
     render(){
+        var id = `_${this.state.friend.uid}`
         if(this.state.friend) {
             if(this.state.mode === 'action'){
                 // Action panel
                 return (
-                    <li className="friend action" id={this.state.friend.uid}>
+                    <li className="friend action" id={id}>
                         <CrossIcon className="switch" id="info" onClick={(e) => {
                             e.stopPropagation()
                             this.switchMode('info')
@@ -177,7 +178,7 @@ export default class Friend extends React.Component{
                     case 'pending':
                         // Pending friend
                         return (
-                            <li className="friend info" id={this.state.friend.uid} type={this.props.status}>
+                            <li className="friend info" id={id} type={this.props.status}>
                                 <InfoIcon className="switch" id="action" onClick={(e) => {
                                     e.stopPropagation()
                                     this.switchMode('action')
@@ -191,7 +192,7 @@ export default class Friend extends React.Component{
                     case 'invitation':
                         // Invitation QCM
                         return (
-                            <li className="friend info" id={this.state.friend.uid} type={this.props.status}>
+                            <li className="friend info" id={id} type={this.props.status}>
                                 <img className="avatar" src={this.state.friend.avatar} alt="avatar" />
                                 <div className="name">{this.state.friend.name}</div>
                                 <QCMButton onFalse={() => this.invitationResponse(false)}
@@ -203,7 +204,7 @@ export default class Friend extends React.Component{
                     default:
                         // default friend
                         return (
-                            <li className="friend info" id={this.state.friend.uid} type={this.state.status} onClick={() => this.showFriend(this.state.friend.uid)}>
+                            <li className="friend info" id={id} type={this.state.status} onClick={() => this.showFriend(this.state.friend.uid)}>
                                 <InfoIcon className="switch" id="action" onClick={(e) => {
                                     e.stopPropagation()
                                     this.switchMode('action')
