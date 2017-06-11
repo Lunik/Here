@@ -155,8 +155,8 @@ export default class Friend extends React.Component{
         }
     }
     render(){
-        var id = `_${this.state.friend.uid}`
         if(this.state.friend) {
+          var id = `_${this.state.friend.uid}`
             if(this.state.mode === 'action'){
                 // Action panel
                 return (
