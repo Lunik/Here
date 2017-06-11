@@ -14,6 +14,8 @@ class App extends React.Component {
             hash: window.location.hash.slice(1),
             connected: false
         }
+
+        console.log(firebaseApp)
     }
     componentDidMount(){
         window.onhashchange = () => this.updateHash()

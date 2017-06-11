@@ -10,5 +10,6 @@ import ErrorIcon from './error'
 import WarningIcon from './warning'
 import CrossIcon from './cross'
 import TickIcon from './tick'
+import HeartIcon from './heart'
 
-export { GoogleIcon, PlusIcon, ExitIcon, InfoIcon, WarningIcon, ErrorIcon, CrossIcon, TickIcon }
+export { GoogleIcon, PlusIcon, ExitIcon, InfoIcon, WarningIcon, ErrorIcon, CrossIcon, TickIcon, HeartIcon }

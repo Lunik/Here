@@ -1,0 +1,33 @@
+.poke-button{
+    width: 30%;
+    min-width: 200px;
+
+    margin: 100px auto;
+}
+.poke-button.enabled{
+    cursor: pointer;
+}
+.poke-button img.avatar{
+    filter: drop-shadow(0px 4px 10px rgba(0, 0, 0,0.75));
+    box-shadow: none !important;
+    width: 98%;
+    border-radius: 100%;
+}
+
+.poke-button.enabled img.avatar:hover{
+    width: 100%;
+    margin-top: -1%;
+}
+
+.poke-button.enabled img.avatar:active{
+    width: 94%;
+    margin-top: 2%;
+}
+
+.poke-button.enabled .timer{
+    display: none;
+}
+
+.poke-button.disabled img.avatar{
+    filter: grayscale(100%) drop-shadow(0px 4px 10px rgba(0, 0, 0,0.75));
+}

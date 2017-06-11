@@ -1,6 +1,7 @@
 /**
  * Created by lunik on 04/06/2017.
  */
+import * as Vibrant from 'node-vibrant'
 
 function generateID(user){
     var id = user.displayName.toLowerCase()
@@ -9,4 +10,14 @@ function generateID(user){
     return `${id}_${user.uid.slice(0, 5).toLowerCase()}`
 }
 
-export { generateID }
+function getColors(img, cb){
+    Vibrant.from(img).getPalette((err, palette) => {
+        var colors = Object.keys(palette)
+        var hexColors = []
+        for(let c in colors){
+            hexColors.push(palette[colors[c]].getHex())
+        }
+        cb(hexColors)
+    })
+}
+export { generateID, getColors }

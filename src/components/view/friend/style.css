@@ -4,27 +4,6 @@ div.friend-profile{
 
     text-align: center;
 }
-div.friend-profile img{
-    width: 40%;
-    min-width: 200px;
-
-    border-radius: 100%;
-
-    filter: drop-shadow(0px 4px 10px rgba(0, 0, 0,0.75));
-
-    cursor: pointer;
-}
-
-div.friend-profile img:hover{
-    width: calc(40% + 4px);
-    margin-top: -2px;
-}
-
-div.friend-profile img:active{
-    width: calc(40% - 10px);
-    margin-top: 5px;
-}
-
 div.friend-profile .loading{
     position: fixed;
     top: 50%;

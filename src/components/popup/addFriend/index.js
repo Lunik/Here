@@ -30,7 +30,7 @@ export default class AddFriendPopup extends React.Component{
     }
     updateUid(uid){
         this.setState({
-            uid: uid
+            uid: uid.replace(/[^0-9^a-z]/g, '')
         })
     }
     isUserExist(uid, cb){

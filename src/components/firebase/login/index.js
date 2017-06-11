@@ -7,7 +7,6 @@ import firebase from 'firebase/app'
 import 'firebase/auth'
 import LoginButton from '../../button/session'
 import '../../view/login/style.css'
-
 import { generateID } from '../../../lib/user'
 
 export default class FirebaseLogin extends React.Component{
@@ -33,7 +32,6 @@ export default class FirebaseLogin extends React.Component{
         var database = firebaseApp.database()
         database.ref(`/users/${uid}`).once('value').then(cb)
     }
-
     saveUser(user){
         var database = firebaseApp.database()
         this.getUser(user.uid, (snapshot) => {

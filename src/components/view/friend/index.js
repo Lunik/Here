@@ -7,6 +7,7 @@ import firebaseApp from '../../firebase/app/index'
 import 'firebase/database'
 import Spinner from 'react-spinkit'
 import { notify } from '../../notification'
+import PokeButton from '../../button/poke'
 
 import './style.css'
 
@@ -70,7 +71,7 @@ export default class Friend extends React.Component{
             return (
                 <div className="friend-profile">
                     <p>Click to send notification to {this.state.user.name}</p>
-                    <img alt="avatar" src={this.state.user.avatar}/>
+                    <PokeButton timeout={30000} user={this.state.user} />
                 </div>
             )
         } else {

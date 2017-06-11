@@ -30,7 +30,7 @@ export default class SvgIcon extends React.Component{
     render(){
         var className = `icon ${this.props.className}`
         return (
-            <span className={className} onClick={(e) => this.state.onClick(e)}>
+            <span className={className} style={this.props.style} onClick={(e) => this.state.onClick(e)}>
                 {this.state.svg}
             </span>
         )
