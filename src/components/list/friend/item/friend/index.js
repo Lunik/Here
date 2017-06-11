@@ -27,12 +27,28 @@ export default class Friend extends React.Component{
     }
     componentDidMount(){
         this.get(this.props.uid, (user) => {
-            this.setState({
-                friend: user
-            })
-            this.handlePoke()
+            try {
+                this.setState({
+                    friend: user
+                })
+                this.handlePoke()
+            } catch (e){
+
+            }
         })
         this.triggerUpdate()
+    }
+    componentWillUnmount(){
+        var database = firebaseApp.database()
+        var myUid = firebaseApp.auth().currentUser.uid
+
+        database.ref(`/users/${this.props.uid}/invitations/${myUid}`).off()
+        database.ref(`/users/${this.props.uid}/connections/${myUid}`).off()
+        database.ref(`/users/${this.props.uid}/metadata`).off()
+        database.ref(`/users/${myUid}/metadata`).off()
+        database.ref(`/users/${myUid}/connections/${this.state.friend.uid}`).off()
+        database.ref(`/users/${myUid}/invitations/${this.state.friend.uid}`).off()
+        database.ref(`/users/${myUid}/poke`).off()
     }
     triggerUpdate(){
         var database = firebaseApp.database()
@@ -128,23 +144,14 @@ export default class Friend extends React.Component{
     }
     sendNotification(){
         if(Notification.permission === 'granted'){
-            try {
-                var notification = new Notification("Poke", {
+            navigator.serviceWorker.ready.then((registration) => {
+                console.log("send notif")
+                registration.showNotification('Poke', {
                     body: `${this.state.friend.name} send you a poke. Click here to send one back.`,
-                    icon: LogoIcon
+                    icon: LogoIcon,
+                    vibrate: [200, 100, 200, 100, 200, 100, 200]
                 })
-                notification.onclick = () => {
-                    window.location.hash = `#${this.state.friend.uid}`
-                }
-            } catch (e){
-                navigator.serviceWorker.ready.then(function(registration) {
-                    registration.showNotification('Poke', {
-                        body: `${this.state.friend.name} send you a poke. Click here to send one back.`,
-                        icon: LogoIcon,
-                        vibrate: [200, 100, 200, 100, 200, 100, 200]
-                    })
-                })
-            }
+            })
         }
     }
     render(){

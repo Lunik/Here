@@ -26,6 +26,13 @@ export default class FriendList extends React.Component{
         this.updateFriends()
         this.updateTriggers()
     }
+    componentWillUnmount(){
+        var database = firebaseApp.database()
+        var myUid = firebaseApp.auth().currentUser.uid
+
+        database.ref(`/users/${myUid}/invitations`)
+        database.ref(`/users/${myUid}/connections`)
+    }
     updateTriggers(){
         var database = firebaseApp.database()
         var myUid = firebaseApp.auth().currentUser.uid

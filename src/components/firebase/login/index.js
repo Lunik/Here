@@ -19,6 +19,11 @@ export default class FirebaseLogin extends React.Component{
 
         this.initAuth()
     }
+    componentWillUnmount(){
+        var database = firebaseApp.database()
+        var myUid = firebaseApp.auth().currentUser.uid
+        database.ref(`/users/${myUid}`).off()
+    }
     initAuth(){
         firebaseApp.auth().onAuthStateChanged((user) => this.setUser(user))
     }

@@ -17,12 +17,18 @@ export default class Poke extends React.Component{
                 y: this.props.begin.y || 0
             },
             onRemove: this.props.onRemove || function(){},
-            color: this.props.colors[Math.floor(Math.random() * (this.props.colors.length - 0))]
+            color: this.props.colors[Math.floor(Math.random() * (this.props.colors.length - 0))],
+            physicsInterval: null
         }
     }
     componentDidMount(){
-        setInterval(()=> this.physics(), 100)
+        this.setState({
+            physicsInterval: setInterval(()=> this.physics(), 100)
+        })
         this.physics()
+    }
+    componentWillUnmount(){
+        clearInterval(this.state.physicsInterval)
     }
     physics(){
         this.setState({

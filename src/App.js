@@ -20,6 +20,11 @@ class App extends React.Component {
         this.updateConnectionStatus()
         this.initNotification()
     }
+    componentWillUnmount(){
+        window.onhashchange = function(){}
+        var database = firebaseApp.database()
+        database.ref(".info/connected").off()
+    }
     updateConnectionStatus(){
         var database = firebaseApp.database()
         database.ref(".info/connected").on("value", (snap) => {
@@ -39,7 +44,6 @@ class App extends React.Component {
         })
     }
     initNotification(){
-        navigator.serviceWorker.register('sw.js')
         if ("Notification" in window) {
             if (Notification.permission !== "granted") {
                 Notification.requestPermission((permission) => {

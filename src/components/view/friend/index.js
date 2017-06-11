@@ -25,6 +25,9 @@ export default class Friend extends React.Component{
             })
         })
     }
+    componentWillUnmount(){
+
+    }
     componentDidMount(){
         this.isHeFriendWithMe(this.state.uid, (isFriend) => {
             if(!isFriend){

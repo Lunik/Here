@@ -19,7 +19,9 @@ export default class PokeButton extends React.Component{
             lastPoke: (new Date()).getTime() - (this.props.timeout || 10000),
             disabled: true,
             timer: 0,
-            colors: ["#ed588d"]
+            colors: ["#ed588d"],
+            timerInterval: null,
+            remainTimeout: null
         }
     }
     componentDidMount(){
@@ -35,6 +37,16 @@ export default class PokeButton extends React.Component{
                 colors: colors
             })
         })
+    }
+    componentWillUnmount(){
+        var database = firebaseApp.database()
+        var myUid = firebaseApp.auth().currentUser.uid
+
+        database.ref(`/users/${myUid}/lastPoke`).off()
+        database.ref(`/users/${this.state.user.uid}/poke`).off()
+
+        clearInterval(this.state.timerInterval)
+        clearTimeout(this.state.remainTimeout)
     }
     canPoke(){
         return ((new Date()).getTime() - this.state.lastPoke) > this.state.timeout
@@ -52,18 +64,21 @@ export default class PokeButton extends React.Component{
             timer: Math.round(remainingTime / 1000)
         })
 
-        var interval = setInterval(() => {
-            this.setState({
-                timer: this.state.timer - 1
-            })
-        }, 1000)
+        this.setState({
+            timerInterval: setInterval(() => {
+                this.setState({
+                    timer: this.state.timer - 1
+                })
+            }, 1000),
+            remainTimeout: setTimeout(() => {
+                clearInterval(this.state.timerInterval)
+                this.setState({
+                    disabled: false
+                })
+            }, remainingTime)
+        })
 
-        setTimeout(() => {
-            clearInterval(interval)
-            this.setState({
-                disabled: false
-            })
-        }, remainingTime)
+
     }
     sendPoke(){
         if(this.canPoke() && !this.state.disabled) {
