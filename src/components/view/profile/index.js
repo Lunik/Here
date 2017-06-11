@@ -3,11 +3,9 @@
  */
 import React from 'react'
 //import QRCode from 'qrcode.react'
-
 import firebaseApp from '../../firebase/app'
 import LoginButton from '../../button/session'
 import FriendList from '../../list/friend'
-
 import './style.css'
 
 export default class Profile extends React.Component {
@@ -15,10 +13,14 @@ export default class Profile extends React.Component {
         super(props)
         this.props = props
     }
+    componentDidMount(){
+
+    }
     logout(){
         firebaseApp.auth().signOut()
     }
     //<QRCode value={this.props.user.uid} />
+
     render(){
         return (
             <div className="profile">

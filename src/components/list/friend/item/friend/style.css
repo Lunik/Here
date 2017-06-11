@@ -10,7 +10,7 @@ li.friend{
     position: relative;
 }
 
-li.friend#info{
+li.friend.info{
     cursor: pointer;
 }
 
@@ -22,7 +22,7 @@ li.friend:active{
     background-color: #dddddd;
 }
 
-li.friend#action{
+li.friend.action{
     background-color: #999999;
 }
 

@@ -14,12 +14,11 @@ class App extends React.Component {
             hash: window.location.hash.slice(1),
             connected: false
         }
-
-        console.log(firebaseApp)
     }
     componentDidMount(){
         window.onhashchange = () => this.updateHash()
         this.updateConnectionStatus()
+        this.initNotification()
     }
     updateConnectionStatus(){
         var database = firebaseApp.database()
@@ -38,6 +37,19 @@ class App extends React.Component {
         this.setState({
             user: user,
         })
+    }
+    initNotification(){
+        navigator.serviceWorker.register('sw.js')
+        if ("Notification" in window) {
+            if (Notification.permission !== "granted") {
+                Notification.requestPermission((permission) => {
+                    if(!('permission' in Notification)) {
+                        Notification.permission = permission;
+                    }
+                })
+            }
+
+        }
     }
     render() {
         var view
@@ -66,6 +78,7 @@ class App extends React.Component {
         return (
             <div className="App">
                 {view}
+                <div className="poke-container"></div>
                 <NotificationContainer />
             </div>
         )

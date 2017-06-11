@@ -15,7 +15,9 @@ function getColors(img, cb){
         var colors = Object.keys(palette)
         var hexColors = []
         for(let c in colors){
-            hexColors.push(palette[colors[c]].getHex())
+            if(palette[colors[c]]) {
+                hexColors.push(palette[colors[c]].getHex())
+            }
         }
         cb(hexColors)
     })

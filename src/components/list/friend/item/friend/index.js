@@ -3,11 +3,15 @@
  */
 
 import React from 'react'
+import ReactDOM from 'react-dom'
 import firebaseApp from '../../../../firebase/app/index'
 import 'firebase/database'
 import Spinner from 'react-spinkit'
 import { InfoIcon, CrossIcon } from '../../../../image/svg/index'
 import QCMButton from '../../../../button/qcm'
+import Poke from '../../../../image/poke'
+import { getColors } from '../../../../../lib/user'
+import LogoIcon from '../../../../image/logo/logo.png'
 
 import './style.css'
 
@@ -20,15 +24,13 @@ export default class Friend extends React.Component{
             mode: 'info',
             status: this.props.status
         }
+    }
+    componentDidMount(){
         this.get(this.props.uid, (user) => {
             this.setState({
                 friend: user
             })
-        })
-    }
-    componentDidMount(){
-        this.setState({
-            mounted: true
+            this.handlePoke()
         })
         this.triggerUpdate()
     }
@@ -60,7 +62,10 @@ export default class Friend extends React.Component{
         database.ref(`/users/${uid}/metadata`).once('value').then((snapshot) => {
             var user = snapshot.val()
             user.uid = uid
-            cb(user)
+            getColors(user.avatar, (colors) => {
+                user.colors = colors
+                cb(user)
+            })
         })
     }
     remove(){
@@ -92,12 +97,62 @@ export default class Friend extends React.Component{
             })
         }
     }
+    handlePoke(){
+        var database = firebaseApp.database()
+        var myUid = firebaseApp.auth().currentUser.uid
+
+        database.ref(`/users/${myUid}/poke`).on('child_added', (snapshot) => {
+            if(snapshot.val().from === this.state.friend.uid){
+                this.sendNotification()
+                this.pokeAnimation(snapshot.val())
+                database.ref(`users/${myUid}/poke/${snapshot.key}`).set(null)
+            }
+        })
+    }
+    pokeAnimation(poke){
+        const friendDiv = document.querySelector(`li.friend#${poke.from} .avatar`)
+        var notification = document.createElement('div')
+        document.querySelector('.poke-container').appendChild(notification)
+        ReactDOM.render(<Poke colors={this.state.friend.colors}
+                              begin={{
+                                  x: friendDiv.x + (Math.random() * (friendDiv.width - 50)),
+                                  y: friendDiv.y + (Math.random() * (friendDiv.height - 50))
+                              }}
+                              onRemove={() => {
+                                  try {
+                                      document.querySelector('.poke-container').removeChild(notification)
+                                  } catch (e){
+                                      return
+                                  }
+                              }}/>, notification)
+    }
+    sendNotification(){
+        if(Notification.permission === 'granted'){
+            try {
+                var notification = new Notification("Poke", {
+                    body: `${this.state.friend.name} send you a poke. Click here to send one back.`,
+                    icon: LogoIcon
+                })
+                notification.onclick = () => {
+                    window.location.hash = `#${this.state.friend.uid}`
+                }
+            } catch (e){
+                navigator.serviceWorker.ready.then(function(registration) {
+                    registration.showNotification('Poke', {
+                        body: `${this.state.friend.name} send you a poke. Click here to send one back.`,
+                        icon: LogoIcon,
+                        vibrate: [200, 100, 200, 100, 200, 100, 200]
+                    })
+                })
+            }
+        }
+    }
     render(){
         if(this.state.friend) {
             if(this.state.mode === 'action'){
                 // Action panel
                 return (
-                    <li className="friend" id="action">
+                    <li className="friend action" id={this.state.friend.uid}>
                         <CrossIcon className="switch" id="info" onClick={(e) => {
                             e.stopPropagation()
                             this.switchMode('info')
@@ -115,7 +170,7 @@ export default class Friend extends React.Component{
                     case 'pending':
                         // Pending friend
                         return (
-                            <li className="friend" id="info" type={this.props.status}>
+                            <li className="friend info" id={this.state.friend.uid} type={this.props.status}>
                                 <InfoIcon className="switch" id="action" onClick={(e) => {
                                     e.stopPropagation()
                                     this.switchMode('action')
@@ -129,7 +184,7 @@ export default class Friend extends React.Component{
                     case 'invitation':
                         // Invitation QCM
                         return (
-                            <li className="friend" id="info" type={this.props.status}>
+                            <li className="friend info" id={this.state.friend.uid} type={this.props.status}>
                                 <img className="avatar" src={this.state.friend.avatar} alt="avatar" />
                                 <div className="name">{this.state.friend.name}</div>
                                 <QCMButton onFalse={() => this.invitationResponse(false)}
@@ -141,7 +196,7 @@ export default class Friend extends React.Component{
                     default:
                         // default friend
                         return (
-                            <li className="friend" id="info" type={this.state.status} onClick={() => this.showFriend(this.state.friend.uid)}>
+                            <li className="friend info" id={this.state.friend.uid} type={this.state.status} onClick={() => this.showFriend(this.state.friend.uid)}>
                                 <InfoIcon className="switch" id="action" onClick={(e) => {
                                     e.stopPropagation()
                                     this.switchMode('action')
@@ -157,7 +212,7 @@ export default class Friend extends React.Component{
         } else {
             // loading
             return (
-                <li className="friend" id="info" onClick={() => this.showFriend(this.state.friend.uid)}>
+                <li className="friend" onClick={() => this.showFriend(this.state.friend.uid)}>
                     <div className="loading">
                         <Spinner
                             fadeIn="none"

@@ -27,7 +27,7 @@ export default class Poke extends React.Component{
     physics(){
         this.setState({
             position: {
-                x: this.state.position.x,
+                x: this.state.position.x + (Math.random() * (20 - (-20)) - 20),
                 y: this.state.position.y - 30
             }
         })
