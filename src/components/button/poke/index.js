@@ -39,11 +39,6 @@ export default class PokeButton extends React.Component {
     })
   }
   componentWillUnmount () {
-    var database = firebaseApp.database()
-    var myUid = firebaseApp.auth().currentUser.uid
-
-    database.ref(`/users/${myUid}/lastPoke`).off()
-    database.ref(`/users/${this.state.user.uid}/poke`).off()
 
     clearInterval(this.state.timerInterval)
     clearTimeout(this.state.remainTimeout)

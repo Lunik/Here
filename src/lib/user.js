@@ -21,6 +21,10 @@ function getColors (img, cb) {
       }
     }
     cb(hexColors)
+    var canvas = document.querySelector('.vibrant-canvas')
+    if (canvas) {
+      canvas.remove()
+    }
   })
 }
 export { generateID, getColors }

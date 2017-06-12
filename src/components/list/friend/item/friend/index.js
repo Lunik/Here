@@ -38,17 +38,12 @@ export default class Friend extends React.Component {
     })
     this.triggerUpdate()
   }
-  componentWillUnmount () {
+  componentWillMount () {
     var database = firebaseApp.database()
     var myUid = firebaseApp.auth().currentUser.uid
 
-    database.ref(`/users/${this.props.uid}/invitations/${myUid}`).off()
-    database.ref(`/users/${this.props.uid}/connections/${myUid}`).off()
-    database.ref(`/users/${this.props.uid}/metadata`).off()
-    database.ref(`/users/${myUid}/metadata`).off()
-    database.ref(`/users/${myUid}/connections/${this.state.friend.uid}`).off()
-    database.ref(`/users/${myUid}/invitations/${this.state.friend.uid}`).off()
     database.ref(`/users/${myUid}/poke`).off()
+    database.ref(`/users/${this.props.uid}/invitations/${myUid}`).off()
   }
   triggerUpdate () {
     var database = firebaseApp.database()
@@ -127,29 +122,41 @@ export default class Friend extends React.Component {
   }
   pokeAnimation (poke) {
     const friendDiv = document.querySelector(`li.friend#_${poke.from} .avatar`)
-    var notification = document.createElement('div')
-    document.querySelector('.poke-container').appendChild(notification)
-    ReactDOM.render(<Poke colors={this.state.friend.colors}
-      begin={{
-        x: friendDiv.x + (Math.random() * (friendDiv.width - 50)),
-        y: friendDiv.y + (Math.random() * (friendDiv.height - 50))
-      }}
-      onRemove={() => {
-        try {
-          document.querySelector('.poke-container').removeChild(notification)
-        } catch (e) {
+    if (friendDiv) {
+      var notification = document.createElement('div')
+      document.querySelector('.poke-container').appendChild(notification)
+      ReactDOM.render(<Poke colors={this.state.friend.colors}
+        begin={{
+          x: friendDiv.x + (Math.random() * (friendDiv.width - 50)),
+          y: friendDiv.y + (Math.random() * (friendDiv.height - 50))
+        }}
+        onRemove={() => {
+          try {
+            document.querySelector('.poke-container').removeChild(notification)
+          } catch (e) {
 
-        }
-      }} />, notification)
+          }
+        }} />, notification)
+    }
   }
   sendNotification () {
     if (Notification.permission === 'granted') {
       navigator.serviceWorker.ready.then((registration) => {
-        console.log('send notif')
-        registration.showNotification('Poke', {
-          body: `${this.state.friend.name} send you a poke. Click here to send one back.`,
-          icon: LogoIcon,
-          vibrate: [200, 100, 200, 100, 200, 100, 200]
+        registration.getNotifications({tag: `poke_${this.state.friend.uid}`}).then((notifications) => {
+          let count = 1
+          if (notifications.length > 0) {
+            count += notifications[0].data.count
+          }
+          registration.showNotification('Poke', {
+            body: `${this.state.friend.name} send you ${count} poke.`,
+            tag: `poke_${this.state.friend.uid}`,
+            badge: LogoIcon,
+            data: {
+              count: count
+            },
+            icon: LogoIcon/*,
+             vibrate: [200, 100, 200, 100, 200, 100, 200] */
+          })
         })
       })
     }

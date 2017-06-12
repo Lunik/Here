@@ -23,8 +23,6 @@ export default class AddFriendPopup extends React.Component {
     }
   }
   componentWillUnmount () {
-    var database = firebaseApp.database()
-    database.ref(`/users/${this.state.uid}/metadata`)
   }
   onRemove (uid) {
     this.setState({

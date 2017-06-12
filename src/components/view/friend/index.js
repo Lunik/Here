@@ -74,7 +74,7 @@ export default class Friend extends React.Component {
       return (
         <div className='friend-profile'>
           <p>Click to send notification to {this.state.user.name}</p>
-          <PokeButton timeout={30000} user={this.state.user} />
+          <PokeButton timeout={1000} user={this.state.user} />
         </div>
       )
     } else {
