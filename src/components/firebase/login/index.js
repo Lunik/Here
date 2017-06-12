@@ -50,16 +50,13 @@ export default class FirebaseLogin extends React.Component {
           uid: user.uid
         })
       } else {
-        database.ref(`/users/${user.uid}`).update({
-          metadata: {
-            name: user.displayName,
-            avatar: user.photoURL,
-            id: generateID(user)
-          },
-          email: user.email,
-          phone: user.phoneNumber,
-          uid: user.uid
-        })
+        let updates = {}
+        updates[`${user.id}/metadata`] = {
+          name: user.displayName,
+          avatar: user.photoURL,
+          id: generateID(user)
+        }
+        database.ref('/users').update(updates)
       }
     })
   }
