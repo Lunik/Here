@@ -18,6 +18,7 @@ export default class Profile extends React.Component {
   }
   logout () {
     firebaseApp.auth().signOut()
+    window.location.reload()
   }
     // <QRCode value={this.props.user.uid} />
 
