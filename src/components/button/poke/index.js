@@ -39,7 +39,6 @@ export default class PokeButton extends React.Component {
     })
   }
   componentWillUnmount () {
-
     clearInterval(this.state.timerInterval)
     clearTimeout(this.state.remainTimeout)
   }
@@ -59,18 +58,25 @@ export default class PokeButton extends React.Component {
       timer: Math.round(remainingTime / 1000)
     })
 
-    this.setState({
-      timerInterval: setInterval(() => {
+    var timerInterval = setInterval(() => {
+      try {
         this.setState({
           timer: this.state.timer - 1
         })
-      }, 1000),
-      remainTimeout: setTimeout(() => {
-        clearInterval(this.state.timerInterval)
-        this.setState({
-          disabled: false
-        })
-      }, remainingTime)
+      } catch (e) {
+        clearInterval(timerInterval)
+      }
+    }, 1000)
+    var timeoutInterval = setTimeout(() => {
+      clearInterval(this.state.timerInterval)
+      this.setState({
+        disabled: false
+      })
+    }, remainingTime)
+
+    this.setState({
+      timerInterval: timerInterval,
+      remainTimeout: timeoutInterval
     })
   }
   sendPoke () {
