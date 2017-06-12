@@ -29,7 +29,7 @@ class App extends React.Component {
     var database = firebaseApp.database()
     database.ref('.info/connected').on('value', (snap) => {
       this.setState({
-        connected: snap.val()
+        connected: snap.val() || true
       })
     })
   }

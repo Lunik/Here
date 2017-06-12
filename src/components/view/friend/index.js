@@ -15,15 +15,11 @@ export default class Friend extends React.Component {
   constructor (props) {
     super(props)
     this.props = props
+    this.localStorageKey = 'here:friend'
     this.state = {
       uid: this.props.uid,
-      user: null
+      user: JSON.parse(localStorage.getItem(`${this.localStorageKey}:${this.props.uid}`))
     }
-    this.get(this.state.uid, (user) => {
-      this.setState({
-        user: user
-      })
-    })
   }
   componentWillUnmount () {
 
@@ -38,6 +34,12 @@ export default class Friend extends React.Component {
         })
         this.returnProfile()
       }
+    })
+    this.get(this.state.uid, (user) => {
+      this.setState({
+        user: user
+      })
+      localStorage.setItem(`${this.localStorageKey}:${this.props.uid}`, JSON.stringify(user))
     })
   }
   isHeFriendWithMe (uid, cb) {

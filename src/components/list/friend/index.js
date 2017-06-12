@@ -18,7 +18,7 @@ export default class FriendList extends React.Component {
     this.props = props
     this.localStorageKey = 'here:friends'
     this.state = {
-      friends: {},
+      friends: JSON.parse(localStorage.getItem(this.localStorageKey )) || {},
       addFriendPopup: false
     }
   }
@@ -76,6 +76,7 @@ export default class FriendList extends React.Component {
     this.setState({
       friends: friends
     })
+    localStorage.setItem(this.localStorageKey, JSON.stringify(friends))
   }
   isHeFriendWithMe (uid, cb) {
     var database = firebaseApp.database()
@@ -120,13 +121,24 @@ export default class FriendList extends React.Component {
       })
     })
   }
+  changeStatus(uid, status){
+    const values = ['pending', 'friend', 'invitation']
+    if (values.indexOf(status) !== -1) {
+      var friends = Object.assign({}, this.state.friends)
+      friends[uid] = status
+      this.setState({
+        friends: friends
+      })
+      localStorage.setItem(this.localStorageKey, JSON.stringify(friends))
+    }
+  }
   generateListItems () {
     var listItems = []
     for (let friendId in this.state.friends) {
       let status = this.state.friends[friendId]
 
       listItems.push((
-        <FriendItem uid={friendId} status={status}
+        <FriendItem uid={friendId} status={status} changeStatus={(status) => this.changeStatus(friendId, status)}
           removeFriend={() => this.removeFriend(friendId)} />
            ))
     }

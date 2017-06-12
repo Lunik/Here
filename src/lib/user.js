@@ -11,20 +11,28 @@ function generateID (user) {
 }
 
 function getColors (img, cb) {
-  Vibrant.from(img).getPalette((err, palette) => {
-    if (err) { console.error(err) }
-    const colors = Object.keys(palette)
-    var hexColors = []
-    for (let c in colors) {
-      if (palette[colors[c]]) {
-        hexColors.push(palette[colors[c]].getHex())
+  try {
+    Vibrant.from(img).getPalette((err, palette) => {
+      if (err) {
+        cb(['#ed588d'])
+        return
       }
-    }
-    cb(hexColors)
-    var canvas = document.querySelector('.vibrant-canvas')
-    if (canvas) {
-      canvas.remove()
-    }
-  })
+      const colors = Object.keys(palette)
+      var hexColors = []
+      for (let c in colors) {
+        if (palette[colors[c]]) {
+          hexColors.push(palette[colors[c]].getHex())
+        }
+      }
+      cb(hexColors)
+      var canvas = document.querySelector('.vibrant-canvas')
+      if (canvas) {
+        canvas.remove()
+      }
+    })
+  } catch (e) {
+    cb(['#ed588d'])
+  }
 }
+
 export { generateID, getColors }

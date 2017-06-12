@@ -19,8 +19,9 @@ export default class Friend extends React.Component {
   constructor (props) {
     super(props)
     this.props = props
+    this.localStorageKey = 'here:friend'
     this.state = {
-      friend: null,
+      friend: JSON.parse(localStorage.getItem(`${this.localStorageKey}:${this.props.uid}`)) || {},
       mode: 'info',
       status: this.props.status
     }
@@ -31,6 +32,7 @@ export default class Friend extends React.Component {
         this.setState({
           friend: user
         })
+        localStorage.setItem(`${this.localStorageKey}:${this.props.uid}`, JSON.stringify(user))
         this.handlePoke()
       } catch (e) {
 
@@ -80,6 +82,7 @@ export default class Friend extends React.Component {
     })
   }
   remove () {
+    localStorage.removeItem(`${this.localStorageKey}:${this.props.uid}`)
     this.props.removeFriend()
     this.switchMode('info')
   }
@@ -106,6 +109,7 @@ export default class Friend extends React.Component {
       this.setState({
         status: status
       })
+      this.props.changeStatus(status)
     }
   }
   handlePoke () {
