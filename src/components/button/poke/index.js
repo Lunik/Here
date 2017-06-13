@@ -5,6 +5,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import firebaseApp from '../../firebase/app'
+
 import './style.css'
 import Poke from '../../image/poke'
 import { getColors } from '../../../lib/user'
@@ -85,18 +86,9 @@ export default class PokeButton extends React.Component {
       this.updateLastPoke(date)
 
       var database = firebaseApp.database()
-      var myUid = firebaseApp.auth().currentUser.uid
+      var user = firebaseApp.auth().currentUser
 
-      database.ref(`/users/${this.state.user.uid}/poke`).push({
-        from: myUid,
-        date: date
-      }).then(() => this.sendAnimation())
-    } else {
-            /* notify({
-                type: "warning",
-                title: "Spam preventing",
-                content: `Wait ${Math.round((this.state.timeout - ((new Date()).getTime() - this.state.lastPoke)) / 1000)}s before sending another poke.`
-            }) */
+      database.ref(`/users/${this.state.user.uid}/poke/${user.uid}`).push(user.displayName).then(() => this.sendAnimation())
     }
   }
   sendAnimation () {

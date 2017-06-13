@@ -11,7 +11,6 @@ import { InfoIcon, CrossIcon } from '../../../../image/svg/index'
 import QCMButton from '../../../../button/qcm'
 import Poke from '../../../../image/poke'
 import { getColors } from '../../../../../lib/user'
-import LogoIcon from '../../../../image/logo/logo.png'
 
 import './style.css'
 
@@ -33,7 +32,7 @@ export default class Friend extends React.Component {
           friend: user
         })
         localStorage.setItem(`${this.localStorageKey}:${this.props.uid}`, JSON.stringify(user))
-        this.handlePoke()
+        this.handlePoke(this.props.uid)
       } catch (e) {
 
       }
@@ -44,7 +43,7 @@ export default class Friend extends React.Component {
     var database = firebaseApp.database()
     var myUid = firebaseApp.auth().currentUser.uid
 
-    database.ref(`/users/${myUid}/poke`).off()
+    database.ref(`/users/${myUid}/poke/${this.props.uid}`).off()
     database.ref(`/users/${this.props.uid}/invitations/${myUid}`).off()
   }
   triggerUpdate () {
@@ -112,20 +111,19 @@ export default class Friend extends React.Component {
       this.props.changeStatus(status)
     }
   }
-  handlePoke () {
+  handlePoke (uid) {
     var database = firebaseApp.database()
     var myUid = firebaseApp.auth().currentUser.uid
 
-    database.ref(`/users/${myUid}/poke`).on('child_added', (snapshot) => {
-      if (snapshot.val().from === this.state.friend.uid) {
-        this.sendNotification()
-        this.pokeAnimation(snapshot.val())
-        database.ref(`users/${myUid}/poke/${snapshot.key}`).set(null)
-      }
+    database.ref(`/users/${myUid}/poke/${uid}`).on('child_added', (snapshot) => {
+      this.pokeAnimation()
+      setTimeout(() => {
+        database.ref(`users/${myUid}/poke/${uid}/${snapshot.key}`).set(null)
+      }, 1000)
     })
   }
-  pokeAnimation (poke) {
-    const friendDiv = document.querySelector(`li.friend#_${poke.from} .avatar`)
+  pokeAnimation () {
+    const friendDiv = document.querySelector(`li.friend#_${this.state.friend.uid} .avatar`)
     if (friendDiv) {
       var notification = document.createElement('div')
       document.querySelector('.poke-container').appendChild(notification)
@@ -141,28 +139,6 @@ export default class Friend extends React.Component {
 
           }
         }} />, notification)
-    }
-  }
-  sendNotification () {
-    if (Notification.permission === 'granted') {
-      navigator.serviceWorker.ready.then((registration) => {
-        registration.getNotifications({tag: `poke_${this.state.friend.uid}`}).then((notifications) => {
-          let count = 1
-          if (notifications.length > 0) {
-            count += notifications[0].data.count
-          }
-          registration.showNotification('Poke', {
-            body: `${this.state.friend.name} send you ${count} poke.`,
-            tag: `poke_${this.state.friend.uid}`,
-            badge: LogoIcon,
-            data: {
-              count: count
-            },
-            icon: LogoIcon/*,
-             vibrate: [200, 100, 200, 100, 200, 100, 200] */
-          })
-        })
-      })
     }
   }
   render () {

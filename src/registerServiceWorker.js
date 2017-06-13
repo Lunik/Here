@@ -7,6 +7,9 @@
 
 // To learn more about the benefits of this model, read https://goo.gl/KwvDNy.
 // This link also includes instructions on opting out of this behavior.
+import firebaseApp from './components/firebase/app'
+import 'firebase/auth'
+import LogoIcon from './components/image/logo/logo.png'
 
 export default function register () {
   if (/* process.env.NODE_ENV === 'production' && */'serviceWorker' in navigator) {
@@ -16,6 +19,31 @@ export default function register () {
       navigator.serviceWorker
         .register(swUrl)
         .then(registration => {
+          // Setup notifications on poke
+          const database = firebaseApp.database()
+          firebaseApp.auth().onAuthStateChanged((user) => {
+            database.ref(`/users/${user.uid}/poke/`).on('value', (friendsSnapshot) => {
+              var friends = friendsSnapshot.val()
+              if (friends === null) {
+                return
+              }
+              Object.keys(friends).map((friendUid) => {
+                var friendPoke = friends[friendUid]
+
+                Object.keys(friendPoke).map((pokeId) => {
+                  var name = friendPoke[pokeId]
+                  sendPokeNotification({
+                    name: name,
+                    uid: friendUid
+                  })
+                  return 0
+                })
+
+                return 0
+              })
+            })
+          })
+
           registration.onupdatefound = () => {
             const installingWorker = registration.installing
             installingWorker.onstatechange = () => {
@@ -39,6 +67,29 @@ export default function register () {
         .catch(error => {
           console.error('Error during service worker registration:', error)
         })
+    })
+  }
+}
+
+function sendPokeNotification (friend) {
+  if (Notification.permission === 'granted') {
+    navigator.serviceWorker.ready.then((registration) => {
+      registration.getNotifications({tag: `poke_${friend.uid}`}).then((notifications) => {
+        let count = 1
+        if (notifications.length > 0) {
+          count += notifications[0].data.count
+        }
+        registration.showNotification('Poke', {
+          body: `${friend.name} send you ${count} poke.`,
+          tag: `poke_${friend.uid}`,
+          badge: LogoIcon,
+          data: {
+            count: count
+          },
+          icon: LogoIcon,
+          vibrate: [200, 100, 200, 100, 200, 100, 200]
+        })
+      })
     })
   }
 }
