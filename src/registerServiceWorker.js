@@ -86,8 +86,8 @@ function sendPokeNotification (friend) {
           data: {
             count: count
           },
-          icon: LogoIcon,
-          vibrate: [200, 100, 200, 100, 200, 100, 200]
+          icon: LogoIcon//,
+          //vibrate: [200, 100, 200, 100, 200, 100, 200]
         })
       })
     })
