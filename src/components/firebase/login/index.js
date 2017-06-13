@@ -16,14 +16,14 @@ export default class FirebaseLogin extends React.Component {
     this.state = {
       enable: false
     }
-
+  }
+  componentWillMount () {
     this.initAuth()
   }
-  componentWillUnmount () {
-
-  }
   initAuth () {
-    firebaseApp.auth().onAuthStateChanged((user) => this.setUser(user))
+    firebaseApp.auth().onAuthStateChanged((user) => {
+      this.setUser(user)
+    })
   }
   setUser (user) {
     this.props.setUser(user)
@@ -51,12 +51,11 @@ export default class FirebaseLogin extends React.Component {
         })
       } else {
         let updates = {}
-        updates[`${user.id}/metadata`] = {
-          name: user.displayName,
-          avatar: user.photoURL,
-          id: generateID(user)
-        }
-        database.ref('/users').update(updates)
+        updates['/metadata/name'] = user.displayName
+        updates['/metadata/avatar'] = user.photoURL
+        updates['/metadata/id'] = generateID(user)
+
+        database.ref(`/users/${user.uid}`).update(updates)
       }
     })
   }
